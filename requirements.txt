@@ -1,0 +1,10 @@
+openpyxl
+pandas
+notion_df
+tkinter
+tkcalendar
+ttkwidgets
+
+
+streamlit
+st_pages
