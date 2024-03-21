@@ -165,9 +165,10 @@ else:
 
 with tab2:
     results_box = st.container()
-    with results_box:
-        st.write(fr"{program} Compliance Score: {compliance_score}%")
-        st.divider()
+    if "results" in st.session_state:
+        with results_box:
+            st.write(fr"{program} Compliance Score: {compliance_score}%")
+            st.divider()
     if st.session_state.run:
         st.dataframe(results, use_container_width=True)
         st.divider()
