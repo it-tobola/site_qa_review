@@ -141,7 +141,7 @@ with tab1:
                 next_button = st.button("next", use_container_width=True, on_click=next_button_click)
 
 with st.sidebar:
-    if results is not None:
+    if "results" in st.session_state:
         all_count = review_standards['STANDARD'].count()
         st.sidebar.subheader("Compliance Summary")
         compliance_counts = results['COMPLIANCE'].value_counts()
