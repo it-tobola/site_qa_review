@@ -1,10 +1,7 @@
 openpyxl
 pandas
 notion_df
-tkinter
-tkcalendar
-ttkwidgets
-
-
+xlsxwriter
+pyinstaller
 streamlit
 st_pages
