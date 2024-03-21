@@ -158,7 +158,10 @@ with st.sidebar:
     else:
         st.sidebar.warning("Results dataframe is not initialized. Please load the standards first.")
 
-navigation_box.progress(reviewed_count/all_count)
+if "results" in st.session_state:
+    navigation_box.progress(reviewed_count/all_count)
+else:
+    pass
 
 with tab2:
     results_box = st.container()
