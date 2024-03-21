@@ -9,11 +9,11 @@ st.set_page_config(page_title="TOBOLA QA Review", layout="wide")
 def load_standards():
     # Load data from Excel file
     if st.session_state.ptype == "CLA":
-        standards = pd.read_excel(fr"files\compliance_standards.xlsx", sheet_name="CLA Standards")
+        standards = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="CLA Standards")
     elif st.session_state.ptype == "NGH":
-        standards = pd.read_excel(fr"files\compliance_standards.xlsx", sheet_name="NGH Standards")
+        standards = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="NGH Standards")
 
-    tobola_standards = pd.read_excel(fr"files\compliance_standards.xlsx", sheet_name="TOBOLA Standards")
+    tobola_standards = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="TOBOLA Standards")
 
     # Merge and clean the data
     review_standards = pd.DataFrame(columns=["SECTION", "STANDARD", "DESCRIPTION", "COMPLIANCE", "FINDING", "Default"])
@@ -71,7 +71,7 @@ with tab1:
     with st.expander("Parameters"):
         l, c, r = st.columns(3)
         with l:
-            program_options = pd.read_excel(fr"files\compliance_standards.xlsx", sheet_name="Programs")
+            program_options = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="Programs")
             program = st.selectbox('Program', options=program_options["Name"], key="program")
         with c:
             review_date = st.date_input('Review Date', key='review_date')
