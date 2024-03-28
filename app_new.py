@@ -55,6 +55,8 @@ def append_finding():
 
 def begin_review():
     st.session_state.run = True
+    program_type = program_options.loc[program_options["Name"] == program, "Type"].iloc[0]
+    st.session_state.ptype = program_type
     return st.session_state.run
 
 
@@ -82,8 +84,6 @@ with tab1:
 
     if st.session_state.run:
         st.divider()
-        program_name = program_options.loc[program_options["Name"] == program, "Type"].iloc[0]
-        st.session_state.ptype = program_name
 
         review_standards = load_standards()
         if "results" not in st.session_state:
