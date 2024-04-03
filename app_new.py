@@ -277,36 +277,35 @@ with st.sidebar:
             st.sidebar.progress(compliance_score)
     elif review_type == "Final":
         if "results" in st.session_state:
-            all_count = review_standards['Standard'].count()
+            initial_false_count = review_standards['Standard'].count()
             st.sidebar.subheader("Compliance Summary")
-            st.sidebar.write(f"Previously Non-compliant: {all_count}")
             compliance_counts = results['Initial Compliance'].value_counts()
             initial_true_count = compliance_counts.get(True, 0)
-            initial_false_count = compliance_counts.get(False, 0)
             total_count = initial_true_count + initial_false_count
-            pending_count = all_count - st.session_state.results['Standard'].count()
-            final_compliance_counts = st.session_state.results["Final Compliance"].value_counts()
-            st.write(final_compliance_counts)
             try:
-                final_true_count = int(final_compliance_counts["True"])
+                pending_count = initial_false_count - st.session_state.results['Standard'].count()
             except KeyError:
-                final_true_count = 0
-            final_false_count = int(final_compliance_counts["False"])
+                pending_count = 1
+
+            final_compliance_counts = st.session_state.results["Final Compliance"].value_counts()
+            final_true_count = final_compliance_counts.get("True", 0)
+            final_false_count = final_compliance_counts.get("False", 0)
+
             reviewed_count = final_true_count + final_false_count
 
             if total_count != 0:
-                compliance_score = round(((total_count - final_false_count) / total_count) * 100)
+                initial_compliance_score = round(((total_count - initial_false_count) / total_count)*100)
             else:
                 # Handle the case where total_count is zero
-                compliance_score = 0  # or any other value you prefer
-            st.sidebar.write(f"Initial Compliance: {compliance_score}%")
-            st.sidebar.progress(compliance_score)
+                initial_compliance_score = 0  # or any other value you prefer
+            st.sidebar.write(f"Initial Compliance: {initial_compliance_score}%")
+            st.sidebar.progress(initial_compliance_score)
             st.sidebar.divider()
-
 
             st.write(fr'Pending Review: {pending_count}')
             st.write(fr"Compliant: {final_true_count}")
             st.write(fr"Non-Compliant: {final_false_count}")
+
     else:
         st.sidebar.warning("Results dataframe is not initialized. Please load the standards first.")
 
@@ -315,7 +314,7 @@ with tab2:
     results_box = st.container()
     if "results" in st.session_state:
         with results_box:
-            st.write(fr"{program} Compliance Score: {compliance_score}%")
+            st.write(fr"{program} Compliance Score: {initial_compliance_score}%")
             st.divider()
     if st.session_state.run:
         st.dataframe(st.session_state.results, use_container_width=True)
@@ -324,20 +323,41 @@ with tab2:
         st.warning("Results dataframe is not initialized. Please load the standards first.")
 
     try:
-        if reviewed_count >= all_count:
+        if reviewed_count >= initial_false_count:
             review_complete = st.checkbox("Completed Review")
 
             if review_complete:
                 if review_type == "Initial":
                     merged_results = pd.merge(results, st.session_state.results, on="STANDARD")
                 elif review_type == "Final":
-                    # Merge the data
                     merged_results = pd.concat([results, st.session_state.results])
-
                 merged_results.drop_duplicates()
+
+                if review_type == "Initial":
+                    initial_compliance_counts = merged_results['Compliance'].value_counts()
+                    initial_true_count = initial_compliance_counts.get("True", 0)
+                    initial_false_count = initial_compliance_counts.get("False", 0)
+                    initial_total = initial_true_count + initial_false_count
+                    initial_compliance_score = round((initial_true_count/initial_total)*100)
+                    st.write(fr"Initial Score: {initial_compliance_score}%")
+                    st.write(fr"Manager:")
+                    st.write(fr"Review Date: {review_date.date()}")
+                    st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd')).date()}")
+                    st.divider()
+                elif review_type == "Final":
+                    final_true_count = final_true_count + initial_true_count
+                    final_false_count = total_count - final_true_count
+                    total_final_report = final_true_count + final_false_count
+                    final_compliance_score = round((final_true_count/total_final_report)*100)
+                    st.write(fr"Initial Score: {initial_compliance_score}%")
+                    st.write(fr"Adjusted Score: {final_compliance_score}%")
+                    st.write("Manager:")
+                    st.write(fr"Review Date: {review_date.date()}")
+                    st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd')).date()}")
+
                 download = st.download_button('Download Report',
                                               data=merged_results.reset_index(drop=True).to_csv(index=False),
-                                              file_name=fr"{program}_{review_date.month}/{review_date.year}.csv",
+                                              file_name=fr"{program}_{review_type}_{review_date.month}_{review_date.year}.csv",
                                               use_container_width=True)
     except NameError:
-        st.warning("Results dataframe is not initialized. Please load the standards first.")
+        st.warning("Pending Review Completion.")
