@@ -340,8 +340,9 @@ with tab2:
                                                                                      "DESCRIPTION",
                                                                                      "COMPLIANCE",
                                                                                      "FINDING"], how="right")
-                    st.write(merged_results)
                     initial_compliance_counts = merged_results['COMPLIANCE'].value_counts()
+                    st.write(initial_compliance_counts)
+
                     initial_true_count = initial_compliance_counts.get("True", 0)
                     initial_false_count = initial_compliance_counts.get("False", 0)
                     initial_total = initial_true_count + initial_false_count
