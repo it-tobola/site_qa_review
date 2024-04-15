@@ -367,4 +367,4 @@ with tab2:
                                               file_name=fr"{program}_{review_type}_{review_date.month}_{review_date.year}.csv",
                                               use_container_width=True)
     except NameError:
-        pass
+        st.warning("Please Finish Audit")
