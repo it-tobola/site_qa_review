@@ -327,8 +327,12 @@ with tab2:
         st.warning("Results dataframe is not initialized. Please load the standards first.")
 
     try:
-        if reviewed_count >= initial_false_count:
-            review_complete = st.checkbox("Completed Review")
+        if review_type == "Final":
+            if reviewed_count >= initial_false_count:
+                review_complete = st.checkbox("Completed Review")
+        elif review_type == "Initial":
+            if reviewed_count >= len(review_standards):
+                review_complete = st.checkbox("Completed Review")
 
             if review_complete:
                 if review_type == "Initial":
