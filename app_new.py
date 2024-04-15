@@ -313,9 +313,10 @@ with st.sidebar:
 with tab2:
     results_box = st.container()
     if "results" in st.session_state:
-        with results_box:
-            st.write(fr"{program} Compliance Score: {initial_compliance_score}%")
-            st.divider()
+        if review_type == "Final":
+            with results_box:
+                st.write(fr"{program} Compliance Score: {initial_compliance_score}%")
+                st.divider()
     if st.session_state.run:
         st.dataframe(st.session_state.results, use_container_width=True)
         st.divider()
