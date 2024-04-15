@@ -336,11 +336,6 @@ with tab2:
             if review_complete:
                 if review_type == "Initial":
                     merged_results = pd.merge(results, st.session_state.results, on="STANDARD")
-                elif review_type == "Final":
-                    merged_results = pd.concat([results, st.session_state.results])
-                merged_results.drop_duplicates()
-
-                if review_type == "Initial":
                     initial_compliance_counts = merged_results['COMPLIANCE'].value_counts()
                     initial_true_count = initial_compliance_counts.get("True", 0)
                     initial_false_count = initial_compliance_counts.get("False", 0)
@@ -352,6 +347,7 @@ with tab2:
                     st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd')).date()}")
                     st.divider()
                 elif review_type == "Final":
+                    merged_results = pd.concat([results, st.session_state.results])
                     final_true_count = final_true_count + initial_true_count
                     final_false_count = total_count - final_true_count
                     total_final_report = final_true_count + final_false_count
@@ -361,6 +357,7 @@ with tab2:
                     st.write("Manager:")
                     st.write(fr"Review Date: {review_date.date()}")
                     st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd')).date()}")
+                merged_results.drop_duplicates()
 
                 download = st.download_button('Download Report',
                                               data=merged_results.reset_index(drop=True).to_csv(index=False),
