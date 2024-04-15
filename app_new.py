@@ -341,10 +341,9 @@ with tab2:
                                                                                      "COMPLIANCE",
                                                                                      "FINDING"], how="right")
                     initial_compliance_counts = merged_results['COMPLIANCE'].value_counts()
-                    st.write(initial_compliance_counts)
-
                     initial_true_count = initial_compliance_counts.get("True", 0)
                     initial_false_count = initial_compliance_counts.get("False", 0)
+                    st.write(initial_true_count)
                     initial_total = initial_true_count + initial_false_count
                     initial_compliance_score = round((initial_true_count/initial_total)*100)
                     st.write(fr"Initial Score: {initial_compliance_score}%")
