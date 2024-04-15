@@ -275,7 +275,6 @@ with st.sidebar:
             st.sidebar.divider()
             st.sidebar.write(f"Current Compliance: {compliance_score}%")
             st.sidebar.progress(compliance_score)
-            initial_compliance_score = compliance_score
     elif review_type == "Final":
         if "results" in st.session_state:
             initial_false_count = review_standards['Standard'].count()
