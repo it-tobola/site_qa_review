@@ -275,6 +275,7 @@ with st.sidebar:
             st.sidebar.divider()
             st.sidebar.write(f"Current Compliance: {compliance_score}%")
             st.sidebar.progress(compliance_score)
+            initial_compliance_score = compliance_score
     elif review_type == "Final":
         if "results" in st.session_state:
             initial_false_count = review_standards['Standard'].count()
@@ -314,7 +315,10 @@ with tab2:
     results_box = st.container()
     if "results" in st.session_state:
         with results_box:
-            st.write(fr"{program} Compliance Score: {initial_compliance_score}%")
+            if review_type == "Initial":
+                st.write(fr"{program} Compliance Score: {compliance_score}%")
+            elif review_type == "Final":
+                st.write(fr"{program} Compliance Score: {round((final_true_count/total_count)*100)}%")
             st.divider()
     if st.session_state.run:
         st.dataframe(st.session_state.results, use_container_width=True)
