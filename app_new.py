@@ -336,6 +336,7 @@ with tab2:
             if review_complete:
                 if review_type == "Initial":
                     merged_results = pd.merge(results, st.session_state.results, on="STANDARD")
+                    st.write(merged_results.columns)
                     initial_compliance_counts = merged_results['COMPLIANCE'].value_counts()
                     initial_true_count = initial_compliance_counts.get("True", 0)
                     initial_false_count = initial_compliance_counts.get("False", 0)
