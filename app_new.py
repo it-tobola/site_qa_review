@@ -349,7 +349,7 @@ with tab2:
                     st.write(fr"Initial Score: {initial_compliance_score}%")
                     st.write(fr"Manager:")
                     st.write(fr"Review Date: {review_date}")
-                    st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd')).date()}")
+                    st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd'))}")
                     st.divider()
                 elif review_type == "Final":
                     merged_results = pd.concat([results, st.session_state.results])
