@@ -313,7 +313,7 @@ with st.sidebar:
 with tab2:
     results_box = st.container()
     if "results" in st.session_state:
-        if review_type == "Final":
+        if review_type == "Initial":
             with results_box:
                 st.write(fr"{program} Compliance Score: {initial_compliance_score}%")
                 st.divider()
