@@ -260,6 +260,10 @@ with tab1:
                 pass
 
 with st.sidebar:
+    def change_std_button():
+        st.session_state.current_standard = (
+        st.session_state.results.index[st.session_state.results.STANDARD == st.session_state.go_back][0])
+
     if review_type == "Initial":
         if "results" in st.session_state:
             all_count = review_standards['STANDARD'].count()
@@ -275,6 +279,10 @@ with st.sidebar:
             st.sidebar.divider()
             st.sidebar.write(f"Current Compliance: {compliance_score}%")
             st.sidebar.progress(compliance_score)
+            go_back_options = st.session_state.results.STANDARD.reset_index(drop=False)
+            st.selectbox("Previous Standards", options=go_back_options.STANDARD, key='go_back')
+            button = st.button("Go to standard", on_click=change_std_button)
+
     elif review_type == "Final":
         if "results" in st.session_state:
             initial_false_count = review_standards['Standard'].count()
