@@ -5,11 +5,11 @@ import backend
 
 st.set_page_config(page_title="TOBOLA QA Review", layout="wide")
 @st.cache_data
-def load_standards():
+def load_standards(type):
     # Load data from Excel file
-    if st.session_state.ptype == "CLA":
+    if type == "CLA":
         standards = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="CLA Standards")
-    elif st.session_state.ptype == "NGH":
+    elif type == "NGH":
         standards = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="NGH Standards")
 
     tobola_standards = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="TOBOLA Standards")
@@ -98,7 +98,7 @@ def append_finding():
 
 def begin_review():
     st.session_state.run = True
-    program_type = program_options.loc[program_options["Name"] == program, "Type"].iloc[0]
+    program_type = program_options["Type"][program_options.Name == program].reset_index(drop=True)[0]
     st.session_state.ptype = program_type
     return st.session_state.run
 
@@ -137,6 +137,8 @@ with tab1:
         with l:
             program_options = pd.read_excel(fr"files/compliance_standards.xlsx", sheet_name="Programs")
             program = st.selectbox('Program', options=program_options["Name"], key="program")
+            program_type = program_options["Type"][program_options.Name == program].reset_index(drop=True)[0]
+            st.write(program_type)
         with c:
             review_date = st.date_input('Review Date', key='review_date')
         with r:
@@ -149,7 +151,7 @@ with tab1:
     if st.session_state.run:
         st.divider()
         if st.session_state.rtype == "Initial":
-            review_standards = load_standards()
+            review_standards = load_standards(program_type)
             if "results" not in st.session_state:
                 st.session_state.results = pd.DataFrame(columns=['SECTION', 'STANDARD', 'DESCRIPTION', 'COMPLIANCE', 'FINDING'])
 
