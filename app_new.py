@@ -343,39 +343,40 @@ with tab2:
             if reviewed_count >= len(review_standards):
                 review_complete = st.checkbox("Completed Review")
 
-            if review_complete:
-                if review_type == "Initial":
-                    merged_results = pd.merge(results, st.session_state.results, on=["SECTION",
-                                                                                     "STANDARD",
-                                                                                     "DESCRIPTION",
-                                                                                     "COMPLIANCE",
-                                                                                     "FINDING"], how="right")
-                    initial_compliance_counts = merged_results['COMPLIANCE'].value_counts()
-                    initial_true_count = initial_compliance_counts.get(True, 0)
-                    initial_false_count = initial_compliance_counts.get(False, 0)
-                    initial_total = initial_true_count + initial_false_count
-                    initial_compliance_score = round((initial_true_count/initial_total)*100)
-                    st.write(fr"Initial Score: {initial_compliance_score}%")
-                    st.write(fr"Manager:")
-                    st.write(fr"Review Date: {review_date}")
-                    st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd'))}")
-                    st.divider()
-                elif review_type == "Final":
-                    merged_results = pd.concat([results, st.session_state.results])
-                    final_true_count = final_true_count + initial_true_count
-                    final_false_count = total_count - final_true_count
-                    total_final_report = final_true_count + final_false_count
-                    final_compliance_score = round((final_true_count/total_final_report)*100)
-                    st.write(fr"Initial Score: {initial_compliance_score}%")
-                    st.write(fr"Adjusted Score: {final_compliance_score}%")
-                    st.write("Manager:")
-                    st.write(fr"Review Date: {review_date.date()}")
-                    st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd')).date()}")
-                merged_results.drop_duplicates()
+        if review_complete:
+            if review_type == "Initial":
+                merged_results = pd.merge(results, st.session_state.results, on=["SECTION",
+                                                                                 "STANDARD",
+                                                                                 "DESCRIPTION",
+                                                                                 "COMPLIANCE",
+                                                                                 "FINDING"], how="right")
+                initial_compliance_counts = merged_results['COMPLIANCE'].value_counts()
+                initial_true_count = initial_compliance_counts.get(True, 0)
+                initial_false_count = initial_compliance_counts.get(False, 0)
+                initial_total = initial_true_count + initial_false_count
+                initial_compliance_score = round((initial_true_count/initial_total)*100)
+                st.write(fr"Initial Score: {initial_compliance_score}%")
+                st.write(fr"Manager:")
+                st.write(fr"Review Date: {review_date}")
+                st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd'))}")
+                st.divider()
+            elif review_type == "Final":
+                merged_results = pd.concat([results, st.session_state.results])
+                final_true_count = final_true_count + initial_true_count
+                final_false_count = total_count - final_true_count
+                total_final_report = final_true_count + final_false_count
+                final_compliance_score = round((final_true_count/total_final_report)*100)
+                st.write(fr"Initial Score: {initial_compliance_score}%")
+                st.write(fr"Adjusted Score: {final_compliance_score}%")
+                st.write("Manager:")
+                st.write(fr"Review Date: {review_date.date()}")
+                st.write(fr"Due Date: {(review_date+pd.to_timedelta(14, 'd')).date()}")
+            merged_results.drop_duplicates()
+            merged_results["Final Compliance"][merged_results["Initial Compliance"] == True] = True
 
-                download = st.download_button('Download Report',
-                                              data=merged_results.reset_index(drop=True).to_csv(index=False),
-                                              file_name=fr"{program}_{review_type}_{review_date.month}_{review_date.year}.csv",
-                                              use_container_width=True)
+            download = st.download_button('Download Report',
+                                          data=merged_results.reset_index(drop=True).to_csv(index=False),
+                                          file_name=fr"{program}_{review_type}_{review_date.month}_{review_date.year}.csv",
+                                          use_container_width=True)
     except NameError:
         st.warning("Please Finish Audit")
